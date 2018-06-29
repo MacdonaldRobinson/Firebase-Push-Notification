@@ -1,0 +1,50 @@
+[debug] [2018-06-28T21:04:51.777Z] ----------------------------------------------------------------------
+[debug] [2018-06-28T21:04:51.780Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\macdonald.robinson\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase serve
+[debug] [2018-06-28T21:04:51.780Z] CLI Version:   3.19.1
+[debug] [2018-06-28T21:04:51.781Z] Platform:      win32
+[debug] [2018-06-28T21:04:51.781Z] Node Version:  v8.11.1
+[debug] [2018-06-28T21:04:51.781Z] Time:          Thu Jun 28 2018 15:04:51 GMT-0600 (Mountain Daylight Time)
+[debug] [2018-06-28T21:04:51.781Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-06-28T21:04:51.792Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-06-28T21:04:51.792Z] > authorizing via signed-in user
+[debug] [2018-06-28T21:04:51.794Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-06-28T21:04:51.794Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/8iyLWU5cSanuVorcuA3TcbWOl2O7WgTyHQmv50MoLAD3ndR9QK9VbsukcDm88-Zl',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Thu Jun 28 2018 15:04:51 GMT-0600 (Mountain Daylight Time)
+[debug] [2018-06-28T21:04:51.978Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-28T21:04:51.992Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/test-de598  
+  
+ Thu Jun 28 2018 15:04:51 GMT-0600 (Mountain Daylight Time)
+[debug] [2018-06-28T21:04:52.408Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-28T21:04:52.411Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/test-de598/tokens  
+  
+ Thu Jun 28 2018 15:04:52 GMT-0600 (Mountain Daylight Time)
+[debug] [2018-06-28T21:04:52.857Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-28T21:04:52.857Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/test-de598  
+  
+ Thu Jun 28 2018 15:04:52 GMT-0600 (Mountain Daylight Time)
+[debug] [2018-06-28T21:04:53.506Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'C:\SourceControl\temp\firebase'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-06-28T21:04:54.149Z] Fetching environment
+[debug] [2018-06-28T21:04:54.151Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/707478039114:getServerAppConfig  
+  
+ Thu Jun 28 2018 15:04:54 GMT-0600 (Mountain Daylight Time)
+[debug] [2018-06-28T21:04:54.151Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/707478039114/clients/_:getWebAppConfig  
+  
+ Thu Jun 28 2018 15:04:54 GMT-0600 (Mountain Daylight Time)
+[debug] [2018-06-28T21:04:54.533Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-28T21:04:54.533Z] Starting @google-cloud/functions-emulator
+[debug] [2018-06-28T21:04:56.059Z] Parsing function triggers
+[info] i  functions: No HTTPS functions found. Use firebase functions:shell if you would like to emulate other types of functions.
+[debug] [2018-06-28T21:04:56.475Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] +  hosting: Local server: http://localhost:5000
+

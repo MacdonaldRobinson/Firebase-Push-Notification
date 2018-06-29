@@ -1,0 +1,240 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title></title>
+	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' />
+</head>
+
+<body>
+
+	<style>
+		#LoggedInWrapper {
+			display: none;
+		}
+	</style>
+
+	<i class="fa"></i>
+
+	<div id="NotificationWrapper">
+		<button id="Subscribe" onclick="Subscribe()">Subscribe</button>
+		<button id="Unsubscribe" onclick="UnSubscribe()">UnSubscribe</button>
+	</div>
+
+	<div>
+		<button id="Login" onclick="Login()">Login</button>
+		<button id="Logout" onclick="Logout()">Login out</button>
+	</div>
+	<div id="LoggedInWrapper">
+		<input type="text" id="Message" />
+		<button onclick="SendMessage()" id="SendMessage">Send Message</button>
+	</div>
+
+	<!-- Firebase App is always required and must be first -->
+	<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-app.js"></script>
+
+	<!-- Add additional services that you want to use -->
+	<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-functions.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-storage.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase-messaging.js"></script>
+
+	<script>
+
+		var config = {
+			apiKey: "AIzaSyBioudbPLvAw3WoigyP4Mb7qvkgDXIzYgY",
+			authDomain: "test-de598.firebaseapp.com",
+			databaseURL: "https://test-de598.firebaseio.com",
+			projectId: "test-de598",
+			storageBucket: "test-de598.appspot.com",
+			messagingSenderId: "707478039114"
+		};
+
+		firebase.initializeApp(config);
+
+		const auth = firebase.auth();
+		const database = firebase.database();
+		const messaging = firebase.messaging();
+
+		const loginButton = document.getElementById("Login");
+		const logoutButton = document.getElementById("Logout");
+
+		const subscribeButton = document.getElementById("Subscribe");
+		const unSubscribeButton = document.getElementById("Unsubscribe");
+
+		const loggedInWrapper = document.getElementById("LoggedInWrapper");
+		const notificationWrapper = document.getElementById("NotificationWrapper");
+
+		const messageInput = document.getElementById("Message");
+		const sendMessageButton = document.getElementById("SendMessage");
+
+		function HideElement(elem) {
+			elem.style.display = "none"
+		}
+
+		function ShowElement(elem) {
+			elem.style.display = "inline-block";
+		}
+
+		function ToggleVisibilities() {
+
+			for (let index in arguments) {
+				if (arguments[index].style.display !== "none") {
+					arguments[index].style.display = "none";
+				}
+				else {
+					arguments[index].style.display = "";
+				}
+			}
+		}
+
+		function CalcButtonVisibilities() {
+			if (auth.currentUser) {
+				ShowElement(logoutButton);
+				ShowElement(loggedInWrapper);
+				HideElement(loginButton);
+			}
+			else {
+				ShowElement(loginButton);
+				HideElement(logoutButton);
+				HideElement(loggedInWrapper);
+			}
+		}
+
+		function Login() {
+			if (!auth.currentUser) {
+				auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+			}
+			else {
+				console.log(auth.currentUser);
+			}
+		}
+
+		function Logout() {
+			auth.signOut()
+		}
+
+		function UnSubscribe() {
+			console.log("Ran UnSubscribe function");
+
+			messaging.getToken().then((token) => {
+
+				console.log("Got token", token);
+
+				const tokens = database.ref("/tokens");
+
+				tokens.orderByChild("token").equalTo(token).once("value").then((snap) => {
+
+					if (snap.val()) {
+
+						console.log("Deleting", snap.val());
+
+						snap.forEach((data) => {
+							data.ref.remove();
+						})
+
+						console.log("Unsubscribed");
+
+						messaging.deleteToken(token);
+
+						HideElement(unSubscribeButton);
+						ShowElement(subscribeButton);
+					}
+					else {
+
+						ShowElement(subscribeButton);
+						ShowElement(unSubscribeButton);
+					}
+				});
+
+			});
+		}
+
+		function Subscribe() {
+			console.log("Ran Subscribe function");
+
+
+			messaging.requestPermission().then(() => {
+				console.log("Request Permission ran", arguments)
+				messaging.getToken().then((token) => {
+
+					console.log("Got token: " + token);
+
+					const tokens = database.ref("/tokens");
+
+					tokens.orderByChild("token").equalTo(token).once("value").then((snap) => {
+
+						console.log("Found token in db: ", snap.val())
+
+						if (!snap.val()) {
+							tokens.push({
+								token: token
+							});
+
+							console.log("Successfully Subscribed");
+
+							HideElement(subscribeButton);
+							ShowElement(unSubscribeButton);
+						}
+						else {
+							console.log("Already Subscribed");
+
+							HideElement(subscribeButton);
+							ShowElement(unSubscribeButton);
+						}
+					})
+				});
+
+			})
+		}
+
+		function SendMessage() {
+			console.log("ran SendMessage function");
+
+			messaging.getToken().then((token) => {
+
+				database.ref("/notifications").push({
+					token: token,
+					message: messageInput.value,
+					photoURL: auth.currentUser.photoURL,
+					user: auth.currentUser.displayName
+				})
+
+				console.log("added notification");
+			})
+		}
+
+		messaging.onMessage(function (payload) {
+			console.log("Ran onMessage");
+
+			console.log("payload", payload);
+
+			var options = {
+				body: payload.notification.body,
+				icon: payload.notification.icon,
+			}
+
+			var notification = new Notification(payload.notification.title, options);
+		});
+
+		messaging.onTokenRefresh(function () {
+			console.log("Ran onTokenRefresh");
+			Subscribe();
+		});
+
+		CalcButtonVisibilities();
+		Subscribe();
+
+		auth.onAuthStateChanged(function () {
+			console.log("Ran onAuthStatusChanged");
+
+			CalcButtonVisibilities();
+		});
+
+
+	</script>
+
+</body>
+
+</html>
